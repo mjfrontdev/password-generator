@@ -1,9 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
 
+:root {
+  --primary: #0ea5e9;
+  --secondary: #6366f1;
+  --accent: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg-light: #f9fafb;
+  --bg-dark: #0a2540;
+  --glass-light: rgba(255,255,255,0.7);
+  --glass-dark: rgba(30,41,59,0.85);
+}
+.dark-mode {
+  --primary: #6366f1;
+  --secondary: #0ea5e9;
+  --bg-dark: #0a2540;
+  --glass-light: rgba(30,41,59,0.85);
+}
 body {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   direction: rtl;
-  background: none;
+  background: var(--bg-light);
+  transition: background 0.3s;
+}
+.dark-mode body, body.dark-bg {
+  background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%) !important;
 }
 
 #app {
@@ -475,4 +497,180 @@ input, button, .form-control, .form-check-label, .form-range, .list-group-item {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+} 
+
+/* دکمه نصب PWA */
+.btn-outline-warning {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-outline-warning:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* دکمه‌ها و کارت‌ها با افکت subtle و مدرن */
+button, .btn, .form-control, .glass-card, .stat-card {
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+}
+button:active, .btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.glass-card, .stat-card {
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* انیمیشن subtle برای ورود کارت‌ها */
+[data-aos] {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: none;
+}
+
+/* افکت hover برای کارت‌ها */
+.glass-card:hover, .stat-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(31,38,135,0.22), 0 2px 8px 0 rgba(0,0,0,0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* رنگ‌بندی مدرن برای progress bar و badgeها */
+.progress-bar.bg-primary, .badge.bg-primary {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+} 
+
+.text-gradient {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.glass-card {
+  background: var(--glass-light);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  transition: background 0.3s, box-shadow 0.2s;
+}
+.dark-mode .glass-card {
+  background: var(--glass-dark);
+  color: #f1f5f9;
+  border: 1px solid rgba(51,65,85,0.3);
+}
+.stat-card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 1rem;
+  padding: 1rem 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 0.5rem;
+  transition: background 0.3s, box-shadow 0.2s;
+}
+.stat-card i {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.08));
+}
+.dark-mode .stat-card {
+  background: rgba(30,41,59,0.9);
+  color: #f1f5f9;
+}
+button, .btn, .form-control, .glass-card, .stat-card {
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+}
+button:active, .btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.glass-card:hover, .stat-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(31,38,135,0.22), 0 2px 8px 0 rgba(0,0,0,0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+.progress-bar.bg-primary, .badge.bg-primary {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+.length-slider::-webkit-slider-thumb {
+  background: var(--primary);
+}
+.length-slider::-moz-range-thumb {
+  background: var(--primary);
+}
+.copy-btn, .generate-btn, .multiple-btn, .clear-btn {
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.copy-btn.copied {
+  background: var(--success);
+}
+.copy-small-btn {
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.copy-small-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.clear-btn {
+  background: var(--danger);
+  color: #fff;
+}
+.clear-btn:hover {
+  background: #b91c1c;
+}
+.actions {
+  gap: 1rem;
+}
+.strength-label span {
+  font-size: 1rem;
+  padding: 0.3em 1em;
+}
+.strength-bar {
+  border-radius: 8px;
+  overflow: hidden;
+}
+.strength-fill {
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+.password-list {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.password-item {
+  background: var(--glass-light);
+  border: none;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s;
+}
+.password-item:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.password-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+}
+.footer {
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #fff;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+}
+a {
+  color: var(--primary);
+}
+a:hover {
+  color: var(--secondary);
 } 

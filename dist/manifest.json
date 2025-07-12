@@ -1,0 +1,23 @@
+{
+  "name": "سازنده پسورد پیشرفته",
+  "short_name": "پسوردساز",
+  "description": "تولید پسورد امن و قوی با قابلیت نصب به عنوان اپلیکیشن PWA.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a2540",
+  "theme_color": "#0ea5e9",
+  "lang": "fa",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 

@@ -14,4 +14,18 @@ AOS.init({
   once: true
 })
 
-createApp(App).mount('#app') 
+createApp(App).mount('#app')
+
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => {
+        // Service worker registered
+      })
+      .catch(err => {
+        // Registration failed
+        console.error('Service Worker registration failed:', err)
+      })
+  })
+} 

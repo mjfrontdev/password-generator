@@ -1,86 +1,67 @@
 <template>
   <div id="app" :class="{ 'dark-mode': isDarkMode }">
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" :class="navbarClass">
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm" :class="navbarClass">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
-          <i class="bi bi-shield-lock-fill me-2"></i>
-          سازنده پسورد پیشرفته
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+          <i class="bi bi-shield-lock-fill display-6"></i>
+          <span class="fs-4 text-gradient">سازنده پسورد پیشرفته</span>
         </a>
-        <div class="navbar-nav ms-auto">
-          <button @click="toggleDarkMode" class="btn btn-outline-light btn-sm me-2">
-            <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
+        <div class="navbar-nav ms-auto d-flex align-items-center gap-2">
+          <button @click="toggleDarkMode" class="btn btn-outline-light btn-sm" :title="themeMode === 'auto' ? 'تم خودکار' : (themeMode === 'dark' ? 'تم تیره' : 'تم روشن')">
+            <i v-if="themeMode === 'auto'" class="bi bi-circle-half fs-5"></i>
+            <i v-else-if="isDarkMode" class="bi bi-sun-fill fs-5"></i>
+            <i v-else class="bi bi-moon-fill fs-5"></i>
+          </button>
+          <button v-if="showInstallBtn" @click="showInstallPwa" class="btn btn-outline-warning btn-sm" title="نصب اپلیکیشن">
+            <i class="bi bi-download fs-5"></i>
           </button>
           <button @click="showInfo" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-info-circle"></i>
+            <i class="bi bi-info-circle fs-5"></i>
           </button>
         </div>
       </div>
     </nav>
-
     <!-- Main Content -->
-    <div class="main-content">
-      <!-- Hero Section -->
+    <div class="main-content d-flex flex-column align-items-center justify-content-center" style="min-height:80vh;">
       <section class="hero-section text-center py-5" data-aos="fade-down">
         <div class="container">
-          <div class="row justify-content-center">
+          <div class="row justify-content-center mb-4">
             <div class="col-lg-8">
-              <h1 class="display-4 fw-bold mb-3 text-gradient">
+              <h1 class="display-4 fw-bold mb-3 text-gradient animate__animated animate__fadeInDown">
                 <i class="bi bi-shield-lock-fill me-3"></i>
                 سازنده پسورد پیشرفته
               </h1>
-              <p class="lead mb-4">پسوردهای امن و قوی با الگوریتم‌های پیشرفته</p>
+              <p class="lead mb-4 animate__animated animate__fadeInUp">پسوردهای امن و قوی با الگوریتم‌های پیشرفته</p>
               <!-- Quick Stats -->
               <div class="row g-3 mb-5">
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-                  <div class="stat-card">
-                    <i class="bi bi-lightning-charge-fill text-warning"></i>
-                    <h4>{{ totalGenerated }}</h4>
-                    <p>پسورد تولید شده</p>
-                  </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-                  <div class="stat-card">
-                    <i class="bi bi-shield-check text-success"></i>
-                    <h4>{{ strongPasswords }}</h4>
-                    <p>پسورد قوی</p>
-                  </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-                  <div class="stat-card">
-                    <i class="bi bi-clock-history text-info"></i>
-                    <h4>{{ averageLength }}</h4>
-                    <p>میانگین طول</p>
-                  </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-                  <div class="stat-card">
-                    <i class="bi bi-graph-up text-primary"></i>
-                    <h4>{{ strengthScore }}</h4>
-                    <p>امتیاز قدرت</p>
+                <div class="col-md-3" v-for="(stat, idx) in statCards" :key="idx" data-aos="fade-up" :data-aos-delay="100*idx">
+                  <div class="stat-card glass-card animate__animated animate__fadeInUp">
+                    <i :class="stat.icon" :style="stat.style"></i>
+                    <h4>{{ stat.value }}</h4>
+                    <p>{{ stat.label }}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <!-- Password Generator Card -->
           <div class="row justify-content-center">
             <div class="col-lg-7">
-              <div class="card shadow-lg rounded-4 p-4 mb-4 glass-card" data-aos="zoom-in">
+              <div class="card shadow-lg rounded-4 p-4 mb-4 glass-card animate__animated animate__zoomIn">
                 <div class="card-body">
                   <!-- Password Display -->
                   <div class="input-group mb-3">
                     <input
                       type="text"
-                      class="form-control form-control-lg text-center fw-bold"
+                      class="form-control form-control-lg text-center fw-bold password-input"
                       :value="generatedPassword"
                       readonly
                       ref="passwordInput"
                       :class="{ 'is-invalid': generatedPassword === 'لطفاً حداقل یک گزینه را انتخاب کنید' }"
                     />
                     <button
-                      class="btn btn-primary btn-lg"
+                      class="btn btn-primary btn-lg copy-btn"
                       type="button"
                       @click="copyPassword"
                       :disabled="generatedPassword === 'لطفاً حداقل یک گزینه را انتخاب کنید'"
@@ -92,14 +73,13 @@
                   <div v-if="generatedPassword === 'لطفاً حداقل یک گزینه را انتخاب کنید'" class="text-danger small mb-2">
                     لطفاً حداقل یک گزینه را انتخاب کنید.
                   </div>
-
                   <!-- Options -->
                   <div class="row g-3 mb-3">
                     <div class="col-12">
                       <label class="form-label fw-bold">طول پسورد: <span class="badge bg-secondary">{{ passwordLength }}</span></label>
                       <input
                         type="range"
-                        class="form-range"
+                        class="form-range length-slider"
                         min="8"
                         max="64"
                         v-model="passwordLength"
@@ -122,28 +102,26 @@
                       </div>
                     </div>
                   </div>
-
                   <!-- Generate Buttons -->
-                  <div class="d-flex gap-2 mb-3">
-                    <button class="btn btn-success flex-fill" @click="generatePassword">
+                  <div class="d-flex gap-2 mb-3 actions">
+                    <button class="btn btn-success flex-fill generate-btn" @click="generatePassword">
                       <i class="bi bi-arrow-repeat me-1"></i>
                       تولید پسورد جدید
                     </button>
-                    <button class="btn btn-outline-info flex-fill" @click="generateMultiple">
+                    <button class="btn btn-outline-info flex-fill multiple-btn" @click="generateMultiple">
                       <i class="bi bi-list-ol me-1"></i>
                       تولید چندین پسورد
                     </button>
                   </div>
-
                   <!-- Strength Meter -->
-                  <div v-if="passwordStrength" class="mb-3">
-                    <div class="d-flex align-items-center mb-1">
+                  <div v-if="passwordStrength" class="mb-3 strength-meter">
+                    <div class="d-flex align-items-center mb-1 strength-label">
                       <span class="fw-bold me-2">قدرت پسورد:</span>
                       <span :class="['badge', strengthBadgeClass]">{{ passwordStrength }}</span>
                     </div>
-                    <div class="progress" style="height: 8px;">
+                    <div class="progress strength-bar" style="height: 8px;">
                       <div
-                        class="progress-bar"
+                        class="progress-bar strength-fill"
                         :class="strengthBarClass"
                         role="progressbar"
                         :style="{ width: strengthPercentage + '%' }"
@@ -157,26 +135,25 @@
               </div>
             </div>
           </div>
-
           <!-- Multiple Passwords List -->
           <div v-if="multiplePasswords.length > 0" class="row justify-content-center" data-aos="fade-up">
             <div class="col-lg-7">
-              <div class="card shadow rounded-4 p-3 mb-4 glass-card">
+              <div class="card shadow rounded-4 p-3 mb-4 glass-card animate__animated animate__fadeInUp">
                 <div class="card-body">
                   <h5 class="fw-bold mb-3"><i class="bi bi-list-ol me-2"></i>پسوردهای تولید شده:</h5>
-                  <div class="list-group mb-3">
+                  <div class="list-group mb-3 password-list">
                     <div
                       v-for="(password, index) in multiplePasswords"
                       :key="index"
-                      class="list-group-item d-flex justify-content-between align-items-center"
+                      class="list-group-item d-flex justify-content-between align-items-center password-item"
                     >
-                      <span class="font-monospace">{{ password }}</span>
-                      <button class="btn btn-outline-primary btn-sm" @click="copySpecificPassword(password)">
+                      <span class="font-monospace password-text">{{ password }}</span>
+                      <button class="btn btn-outline-primary btn-sm copy-small-btn" @click="copySpecificPassword(password)">
                         <i class="bi bi-clipboard"></i> کپی
                       </button>
                     </div>
                   </div>
-                  <button class="btn btn-danger w-100" @click="clearMultiplePasswords">
+                  <button class="btn btn-danger w-100 clear-btn" @click="clearMultiplePasswords">
                     <i class="bi bi-trash"></i> پاک کردن لیست
                   </button>
                 </div>
@@ -186,7 +163,6 @@
         </div>
       </section>
     </div>
-
     <!-- Footer -->
     <footer class="footer text-center py-4 mt-auto" :class="footerClass">
       <div class="container">
@@ -223,10 +199,13 @@ export default {
       passwordStrength: '',
       strengthPercentage: 0,
       isDarkMode: false,
+      themeMode: 'auto', // new: auto, dark, light
       totalGenerated: 0,
       strongPasswords: 0,
       averageLength: 0,
-      strengthScore: 0
+      strengthScore: 0,
+      deferredPrompt: null, // for PWA install
+      showInstallBtn: false // show PWA install button
     }
   },
   computed: {
@@ -264,6 +243,14 @@ export default {
         }
       ]
     },
+    statCards() {
+      return [
+        { icon: 'bi bi-lightning-charge-fill text-warning', value: this.totalGenerated, label: 'پسورد تولید شده', style: 'color:var(--accent);' },
+        { icon: 'bi bi-shield-check text-success', value: this.strongPasswords, label: 'پسورد قوی', style: 'color:var(--success);' },
+        { icon: 'bi bi-clock-history text-info', value: this.averageLength, label: 'میانگین طول', style: 'color:var(--secondary);' },
+        { icon: 'bi bi-graph-up text-primary', value: this.strengthScore, label: 'امتیاز قدرت', style: 'color:var(--primary);' }
+      ]
+    },
     strengthBadgeClass() {
       if (this.passwordStrength === 'ضعیف') return 'bg-danger'
       if (this.passwordStrength === 'متوسط') return 'bg-warning text-dark'
@@ -288,6 +275,24 @@ export default {
   mounted() {
     this.loadTheme()
     this.generatePassword()
+    // PWA install event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      this.deferredPrompt = e
+      this.showInstallBtn = true
+    })
+    // Hide install button if already installed
+    window.addEventListener('appinstalled', () => {
+      this.showInstallBtn = false
+      this.deferredPrompt = null
+      Swal.fire({
+        icon: 'success',
+        title: 'نصب موفق!',
+        text: 'اپلیکیشن با موفقیت نصب شد.',
+        timer: 2000,
+        showConfirmButton: false
+      })
+    })
   },
   methods: {
     generatePassword() {
@@ -432,19 +437,53 @@ export default {
     },
 
     toggleDarkMode() {
-      this.isDarkMode = !this.isDarkMode
-      localStorage.setItem('passgen_dark', this.isDarkMode ? '1' : '0')
+      if (this.themeMode === 'dark') {
+        this.themeMode = 'light'
+      } else if (this.themeMode === 'light') {
+        this.themeMode = 'auto'
+      } else {
+        this.themeMode = 'dark'
+      }
+      this.applyTheme()
+      localStorage.setItem('passgen_theme', this.themeMode)
+    },
+    applyTheme() {
+      if (this.themeMode === 'auto') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        this.isDarkMode = prefersDark
+      } else {
+        this.isDarkMode = this.themeMode === 'dark'
+      }
       document.body.classList.toggle('dark-bg', this.isDarkMode)
     },
-
     loadTheme() {
-      const dark = localStorage.getItem('passgen_dark')
-      this.isDarkMode = dark === '1'
-      if (this.isDarkMode) {
-        document.body.classList.add('dark-bg')
+      const saved = localStorage.getItem('passgen_theme')
+      this.themeMode = saved || 'auto'
+      this.applyTheme()
+      // Listen for system theme changes
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this.applyTheme)
+    },
+    showInstallPwa() {
+      if (this.deferredPrompt) {
+        Swal.fire({
+          title: 'نصب اپلیکیشن',
+          html: `<b>اپلیکیشن را به صفحه اصلی خود اضافه کنید!</b><br>با نصب اپلیکیشن، همیشه به راحتی و سریع به سازنده پسورد دسترسی خواهید داشت.<br><ul class='text-end' style='direction:rtl;'><li>کاملاً آفلاین و سریع</li><li>رابط کاربری مدرن</li><li>امنیت بالا</li></ul>`,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'نصب کن',
+          cancelButtonText: 'فعلاً نه',
+          customClass: { popup: 'text-end' }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.deferredPrompt.prompt()
+            this.deferredPrompt.userChoice.then(() => {
+              this.deferredPrompt = null
+              this.showInstallBtn = false
+            })
+          }
+        })
       }
     },
-
     showInfo() {
       Swal.fire({
         title: 'درباره برنامه',
@@ -470,6 +509,40 @@ export default {
 </script>
 
 <style>
+:root {
+  --primary: #0ea5e9;
+  --secondary: #6366f1;
+  --accent: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg-light: #f9fafb;
+  --bg-dark: #0a2540;
+  --glass-light: rgba(255,255,255,0.7);
+  --glass-dark: rgba(30,41,59,0.85);
+}
+.dark-mode {
+  --primary: #6366f1;
+  --secondary: #0ea5e9;
+  --bg-dark: #0a2540;
+  --glass-light: rgba(30,41,59,0.85);
+}
+body {
+  background: var(--bg-light);
+  transition: background 0.3s;
+}
+.dark-mode body, body.dark-bg {
+  background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%) !important;
+}
+/* دکمه نصب PWA */
+.btn-outline-warning {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-outline-warning:hover {
+  background: var(--accent);
+  color: #fff;
+}
+/* سایر استایل‌های مدرن و افکت‌ها */
 /* Glassmorphism Card */
 .glass-card {
   background: rgba(255,255,255,0.7);
